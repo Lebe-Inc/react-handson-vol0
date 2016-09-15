@@ -328,8 +328,7 @@ module.exports = Block;
 ```js
 var React = require("react");
 
-var count = 0,
-		MAX_COUNT = 10;
+var count = 0,MAX_COUNT = 10;
 
 var Block = React.createClass({
 
