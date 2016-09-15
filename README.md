@@ -38,7 +38,7 @@ LogBoxではただLogItemをリスト表示するための場所を作り、LogI
 
 では、`App.jsx`を作っていきます。
 
-```
+```js
 var React = require("react");
  
 var LogBox = require("./LogBox.jsx");
@@ -90,7 +90,7 @@ var App = React.createClass({
 	},
 
   /*
-  * 全部終わっているかを確認
+  * 	全部終わっているかを確認
   */
 	_checkDone: function(){
 		for(var id in _datas){
@@ -102,7 +102,7 @@ var App = React.createClass({
 	},
 
   /*
-  * 全てチェックする
+  * 	全てチェックする
   */
 	_allComplete: function(){
 		if(this._checkDone()){
@@ -113,7 +113,7 @@ var App = React.createClass({
 	},
 
   /*
-  * 全てupdate
+  * 	全てupdate
   */
 	_updateAll: function(updates){
 		for(var id in _datas){
@@ -122,7 +122,7 @@ var App = React.createClass({
 	},
 
   /*
-  * 編集や、doneなどのupdate
+  * 	編集や、doneなどのupdate
   */
 	_update: function(id,updates){
 		_datas[id] = Object.assign({},_datas[id],updates)
@@ -164,7 +164,7 @@ var App = React.createClass({
 	},
 
   /*
-  * stateを更新
+  * 	stateを更新
   */
 	_save: function(){
 		this.setState({
@@ -185,7 +185,7 @@ module.exports = App
 
 では、入力をする`InputArea.jsx`を作っていきましょう！
 
-```
+```js
 var React = require("react");
  
 var ENTER_KEY_CODE = 13;
@@ -241,7 +241,7 @@ var InputArea = React.createClass({
 	},
 
   /*
-  * 編集機能
+  * 	編集機能
   */
 	_edit: function(e){
 		this.setState({text: e.target.value})
@@ -280,7 +280,7 @@ module.exports = InputArea;
 
 `LogItem`を囲む`LogBox.jsx`を作っていきましょう。
 
-```
+```js
 var React = require("react");
  
 var LogItem = require("./LogItem.jsx");
@@ -359,7 +359,7 @@ var LogItem = React.createClass({
 	},
  
   /*
-  * チェックする
+  * 	チェックする
   */
 	_check: function(e){
 		var id = e.target.id;
