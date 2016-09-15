@@ -362,7 +362,7 @@ var Block = React.createClass({
 			count += 1;
 		
 		}else{
-			this.refs.block_image.src = "images/block.png";
+			this.refs.block_image.src = "images/block_close.png";
 			alert("コインはもう出ません");
 		}
 	}
