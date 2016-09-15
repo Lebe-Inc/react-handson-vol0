@@ -8,7 +8,7 @@ TODOを作りましょう！
 
 Todoを作っていきます。
 
-まずは`App.js`をつくります。
+まずは`app.js`をつくります。
 
 ```js
 var React = require("react");
