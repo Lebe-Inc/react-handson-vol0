@@ -232,7 +232,7 @@ var App = React.createClass({
 
 Block.jsxを編集して、クリックイベントを処理する箇所を書き換えます
 
-```
+```js
 var React = require("react");
 
 var Block = React.createClass({
@@ -281,3 +281,96 @@ var App = React.createClass({
 })
 ```
 
+### 10. 10回クリックしたら押せないように書き換えましょう
+
+ブロックを10回クリックしたらもう出ないように書き換えましょう
+
+10回を設定していくのに、`components/Block.jsx`を書き換えていきます。
+
+```js
+var React = require("react");
+
+var count = 0,
+		MAX_COUNT = 10;
+
+var Block = React.createClass({
+
+	render: function(){
+		return(
+            <div className="img block" onClick={this._onClick}>
+                <img ref="block_image" src="images/block.png"/>
+            </div>
+        )
+	},
+
+	_onClick : function(){
+
+		if(count < MAX_COUNT){
+
+			this.props.classChange();
+			count += 1;
+		
+		}else{
+			this.refs.block_image.src = "images/block.png";
+			alert("コインはもう出ません");
+		}
+	}
+
+})
+
+module.exports = Block;
+```
+
+ここでブラウザ確認しましょう。10回押すともう押せないとアラートが出てブロックの画像が書きかわるはずです。
+
+### 11. アニメーション中はクリックできないように書き換えます
+
+```js
+var React = require("react");
+
+var count = 0,
+		MAX_COUNT = 10;
+
+var Block = React.createClass({
+
+	getInitialState: function(){
+		return{
+      isAnimating: false
+    }
+	},
+
+	render: function(){
+		return(
+            <div className="img block" onClick={this._onClick}>
+                <img ref="block_image" src="images/block.png"/>
+            </div>
+        )
+	},
+
+	_onClick : function(){
+
+		if(this.state.isAnimating) return;
+
+		if(count < MAX_COUNT){
+
+			var self = this;
+
+			this.props.classChange();
+			this.setState({ isAnimating: true });
+			setTimeout(function(){
+				self.setState({ isAnimating: false });
+      },800);
+			count += 1;
+		
+		}else{
+			this.refs.block_image.src = "images/block.png";
+			alert("コインはもう出ません");
+		}
+	}
+
+})
+
+module.exports = Block;
+```
+
+これで、アニメーション中にクリックできないようになっています。
