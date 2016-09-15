@@ -10,7 +10,7 @@ stateで自分自身の状況を判断して、連続でクリックされても
 
 まずは`app.js`を作ります。
 
-```
+```js
 var React = require("react");
 var ReactDOM = require("react-dom");
 
@@ -27,8 +27,16 @@ ReactDOM.render(
 
 次に`components/App.jsx`を作ります。
 
+React.createClass()を使い、コンポーネントを作ります。
 
-```
+ここに出てくるものは、
+
+- getInitialState - stateの初期化。
+- render - HTMLを記述します。
+- _？？？ - 自作のメソッドを記述します。
+
+
+```js
 var React = require("react");
 
 // 後で読み込みます
@@ -90,7 +98,7 @@ Blockが押されたときにclassを変えたいので、`_classChange`をブ�
 
 Blockコンポーネントを作っていきます。
 
-```
+```js
 var React = require("react");
 
 var count = 0,
@@ -159,7 +167,7 @@ Blockでは、`_onClick`というメソッドがあります。
 
 最後に`Coin.jsx`を見てみましょう。
 
-```
+```js
 var React = require("react");
 
 var Coin = React.createClass({
@@ -168,7 +176,7 @@ var Coin = React.createClass({
 
 		return(
 			<div className={this.props.coinClass}>
-				<img src="image/coin.png" />
+				<img src="images/coin.png" />
 			</div>
 		)
 
@@ -182,3 +190,7 @@ module.exports = Coin;
 Coinは、`App.jsx`から受け取った値を自分自身に適応させればいいだけなので、
 
 `className={this.props.coinClass}`となります。
+
+ここまでで、Lv1のアプリは作ることができました。
+
+`index.html`を見て、ちゃんと動くか確認しましょう！
