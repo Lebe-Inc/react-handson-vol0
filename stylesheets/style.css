@@ -1,103 +1,124 @@
 body,html{
 	width: 100%;
 	height: 100%;
+	background-color: #fafafa;
 }
 *{
 	padding: 0;
 	margin: 0;
 	box-sizing: border-box;
+	list-style: none;
 }
-#react,
-#stage{
-	width: 100%;
-	height: 100%;
-	background-image: url("http://www.fixabay.com/images/Entertainment/lfdjvupql3s.png");
-	background-size: cover;
-	background-position: bottom;
+#react{
+	width: 80%;
+	margin: 0 auto;
 }
-.img{
-	position: absolute;
-	top: 300px;
-	left: 200px;
-	width: 100px;
-	height: 100px;
-}
-.coin{
-	position: absolute;
-	top: 300px;
-	left: 200px;
-	width: 100px;
-	height: 100px;
-	-webkit-transform: scale(0.8);
-		 -moz-transform: scale(0.8);
-			-ms-transform: scale(0.8);
-			 -o-transform: scale(0.8);
-					transform: scale(0.8);
-}
-.coin.animating{
-	-webkit-animation: jump 0.8s;
-	-webkit-animation-name: jump;
-	animation: jump 0.8s;
-	animation-name: jump;
-}
-.img img{
+.clearfix::after{
+	content: "";
 	display: block;
+	height: 0%;
+	clear: both;
+}
+.task-count{
+	margin: 2rem 0 0;
+	font-size: 1.4rem;
+}
+.input-area{
+	font-size: 0;
+}
+.allComplete{
+	display: inline-block;
+	width: 5%;
+	height: 3rem;
+	line-height: 3rem;
+	color: white;
+	background-color: #434343;
+	letter-spacing: 5px;
+	font-size: 1rem;
+	outline: none;
+	border: 0;
+}
+.input-text{
+	width: 50%;
+	font-size: 1rem;
+	display: inline-block;
+	height: 3rem;
+	line-height: 3rem;
+	outline: none;
+	border: 0;
+	padding: 10px;
+}
+.submit-button{
+	font-size: 1rem;
+	display: inline-block;
+	height: 3rem;
+	line-height: 3rem;
+	outline: none;
+	border: 0;
+	background-color: #274DEB;
+	color: white;
+	padding: 0 10px;
+}
+.all-clear-btn{
+	outline: none;
+	border: 0;
+	background-color: #EB2A3A;
+	color: white;
+	font-size: 1rem;
+	display: inline-block;
+	height: 3rem;
+	line-height: 3rem;
+	padding: 0 10px;
+}
+.logbox{
 	width: 100%;
-	height: 100%;
+	padding: 0 2%;
+	text-align: center;
 }
-@-webkit-keyframes jump {
-	0%,100%{
-		top: 300px;
-	}
-	20%{
-		top: 110px;
-	}
-	50%{
-		top: 230px;
-	}
-	70%{
-		top: 150px;
-	}
+.logitem{
+	padding: 10px;
+	margin: 10px;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+	position: relative;
+	min-height: 5rem;
+	display: inline-block;
+	min-width: 30%;
+	background-color: #fff;
+	text-align: left;
 }
-@-o-keyframes jump {
-	0%,100%{
-		top: 300px;
-	}
-	20%{
-		top: 110px;
-	}
-	50%{
-		top: 230px;
-	}
-	70%{
-		top: 150px;
-	}
+.done .text{
+	text-decoration: line-through;
+	color: #585858;
 }
-@-moz-keyframes jump {
-	0%,100%{
-		top: 300px;
-	}
-	20%{
-		top: 110px;
-	}
-	50%{
-		top: 230px;
-	}
-	70%{
-		top: 150px;
-	}
+.done{
+	opacity: 0.4;
 }
-@keyframes jump {
-	0%,100%{
-		top: 300px;
-	}
-	20%{
-		top: 110px;
-	}
-	50%{
-		top: 230px;
-	}
-	70%{
-		top: 150px;
-	}
+.logitem .text{
+ font-size: 1.3rem;
+ display: inline-block;
+ padding-right: 15px;
+}
+.logitem .date{
+	display: inline-block;
+	float: right;
+}
+.logitem .delete{
+	position: absolute;
+	bottom: 5px;
+	right: 10px;
+	font-size: 1rem;
+	color: #585858;
+	padding: 5px;
+}
+.logitem .edit{
+	position: absolute;
+	bottom: 5px;
+	right: 35px;
+	font-size: 0.8rem;
+	color: #585858;
+	padding: 5px;
+}
+.logitem .delete:hover,
+.logitem .edit:hover{
+	border-bottom: 1px solid #BFBFBF;
 }

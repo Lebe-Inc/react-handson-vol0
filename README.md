@@ -2,195 +2,401 @@
 
 ## 教材内容
 
-ブロックを押すと、コインが飛び上がる。
-
-stateで自分自身の状況を判断して、連続でクリックされてもバグらないように。
+TODOを作りましょう！
 
 ## ハンズオン
 
-まずは`app.js`を作ります。
+Todoを作っていきます。
+
+まずは`App.js`をつくります。
 
 ```js
 var React = require("react");
 var ReactDOM = require("react-dom");
-
-// 後で作るApp.jsxをここで呼び込んでおく
+ 
 var App = require("./components/App.jsx");
-
-// ReactDOMのrenderメソッドでレンダリング
+ 
 ReactDOM.render(
 	<App/>,
 	document.getElementById("react")
 )
 ```
 
+今回のTodoでは、4つのファイルに分けたいと思います。
 
-次に`components/App.jsx`を作ります。
+- App.jsx
+- InputArea.jsx
+- LogBox.jsx
+- LogItem.jsx
 
-React.createClass()を使い、コンポーネントを作ります。
+App.jsxでは、Todoのデータを管理しています。
 
-ここに出てくるものは、
+InputArea.jsxでは、テキストの入力、追加ボタンなどの操作をできるようにします。
 
-- getInitialState - stateの初期化。
-- render - HTMLを記述します。
-- _？？？ - 自作のメソッドを記述します。（これは習慣なので仕様とかではありません。）
+LogBoxではただLogItemをリスト表示するための場所を作り、LogItemには編集や削除などの機能をもたせます。
 
 
-```js
+では、`App.jsx`を作っていきます。
+
+```
 var React = require("react");
-
-// 後で読み込みます
-var Block = require("./Block.jsx")
-var Coin = require("./Coin.jsx")
-
+ 
+var LogBox = require("./LogBox.jsx");
+var InputArea = require("./InputArea.jsx");
+ 
+var _datas = {};
+ 
+function number_format(num){ // 数字のフォーマットを消える
+	num = Math.floor(num);
+	return ("00"+num).slice(-2);
+}
+ 
 var App = React.createClass({
-
+ 
 	getInitialState: function(){
 		return{
-			coinClass: "coin img"
+			data: {}
 		}
 	},
-
+ 
 	render: function(){
+ 
+		var length = Object.keys(this.state.data).length,
+				task = length > 1 ? "tasks" : "task";
+ 
 		return(
 			<div>
-				<Coin
-					coinClass={this.state.coinClass}
+				<p className="task-count">{length} {task}</p>
+				<InputArea
+					create={this._create}
+					destroyCompleted={this._destroyCompleted}
+					allComplete={this._allComplete}
 				/>
-				<Block
-					classChange={this._classChange}
+				<LogBox
+					logData={this.state.data}
+					deleteAction={this._destroy}
+					updateAction={this._update}
+					getInputDefaultValue={this._getInputDefaultValue}
 				/>
 			</div>
 		)
 	},
+	
+	/*
+	*   編集機能のデフォルトの値をかえす
+	*/
+	_getInputDefaultValue: function(id){
+		return _datas[id].text;
+	},
 
-	_classChange: function(){
-
-		var self = this;
-		this.setState({ coinClass: "coin img animating" });
-
-		setTimeout(function(){
-			self.setState({ coinClass: "coin img" })
-		},800);
-
-	}
-
-})
-
-module.exports = App;
-```
-
-これで親部分のコンポーネントを作ることはできました。
-
-Reactでは、自分自身の状態を保つのに`state`を使います。
-
-App.jsxでは、`coinClass`という`state`を持っています。これは、coinに与えるクラスになります。
-
-Blockが押されたときにclassを変えたいので、`_classChange`をブロックに渡してしまいましょう。
-
-肝心な`coinClass`のstateをCoinコンポーネントに渡し忘れないようにしましょう。
-
-`this.setState`は、stateをアップデートするためのものです。setStateを行うと、仮想DOMにより実際のDOMとの差分だけ再レンダリングされます。
-
-  
-
-次は、この２つの子コンポーネントを作っていきましょう。
-
-Blockコンポーネントを作っていきます。
-
-```js
-var React = require("react");
-
-var count = 0,
-		MAX_COUNT = 10; // 10回叩くと、コインが出なくなるようにします。
-
-var Block = React.createClass({
-
-	getInitialState: function(){
-		return{
-			isAnimating: false
+  /*
+  * 全部終わっているかを確認
+  */
+	_checkDone: function(){
+		for(var id in _datas){
+			if(!_datas[id].isDone){
+				return false;
+			}
 		}
+		return true;
 	},
 
-	render: function(){
-		return(
-			<div className="img block" onClick={this._onClick}>
-				<img ref="block_image" src="http://www.machi-mori.com/mydesign/pict/12803.gif"/>
-			</div>
-		)
-	},
-
-	_onClick: function(){
-
-		if(this.state.isAnimating) return; // アニメーション中のclickを無視します。
-
-		if(count < MAX_COUNT){
-
-			var self = this;
-
-			this.props.classChange();
-			this.setState({ isAnimating: true })
-			setTimeout(function(){
-				self.setState({ isAnimating: false })
-			},800);
-			count+=1;
-
+  /*
+  * 全てチェックする
+  */
+	_allComplete: function(){
+		if(this._checkDone()){
+			this._updateAll({isDone: false})
 		}else{
-
-			this.refs.block_image.src = "http://www.machi-mori.com/mydesign/pict/10211.gif";
-			alert("コインはもう出ません")
-
+			this._updateAll({isDone: true})
 		}
+	},
+
+  /*
+  * 全てupdate
+  */
+	_updateAll: function(updates){
+		for(var id in _datas){
+			this._update(id,updates)
+		}
+	},
+
+  /*
+  * 編集や、doneなどのupdate
+  */
+	_update: function(id,updates){
+		_datas[id] = Object.assign({},_datas[id],updates)
+		this._save();
+	},
+
+  /*
+  *   新しく作る
+  */
+	_create: function(text){
+		var _id = (Date.now() + Math.floor(Math.random() * 999999)).toString(36),
+				d = new Date()
+		_datas[_id] = {
+			id: _id,
+			text: text,
+			date: number_format(d.getHours()) + ":" + number_format(d.getMinutes()),
+			isDone: false
+		}
+		this._save();
+	},
+
+  /*
+  *   終わっているものを全て消す
+  */
+	_destroyCompleted: function(){
+		for(var id in _datas){
+			if(_datas[id].isDone){
+				this._destroy(id);
+			}
+		}
+	},
+
+  /*
+  *   削除
+  */
+	_destroy: function(id){
+		delete _datas[id];
+		this._save();
+	},
+
+  /*
+  * stateを更新
+  */
+	_save: function(){
+		this.setState({
+			data: _datas
+		})
 	}
-
+ 
 })
-
-module.exports = Block;
+ 
+module.exports = App
 ```
 
-これでBlockができあがりました。
+`App.jsx`には、基本的なメソッドを全て実装して`_save`でstateを更新します。
 
-ここで肝心なのは`props`です。
+`_datas`自体にデータをもたせて`_save`を実行する書き方は、facebook/fluxでも活用されている書き方なので
 
-`state`に対して、親から子へと送られるものは`props`というところから参照します。
+是非覚えてください！
 
-先ほど`App.jsx`で、`_classChange`を`classChange`としてBlockに渡していました。
+では、入力をする`InputArea.jsx`を作っていきましょう！
 
-この`classChange`を参照するには、`this.props.classChange`となります。
-
-Blockでは、`_onClick`というメソッドがあります。
-
-ブロックをクリックすると`_onClick`が実行されます。その中で`this.props.classChange`を実行することで
-
-`App.jsx`の`_classChange`を実行し、`coinClass`を書き換えることができます。
-
-
-最後に`Coin.jsx`を見てみましょう。
-
-```js
+```
 var React = require("react");
-
-var Coin = React.createClass({
-
+ 
+var ENTER_KEY_CODE = 13;
+ 
+var InputArea = React.createClass({
+ 
+	getInitialState: function(){
+		return({
+			text: ""
+		})
+	},
+ 
 	render: function(){
-
 		return(
-			<div className={this.props.coinClass}>
-				<img src="images/coin.png" />
+			<div className="input-area">
+				<button
+					className="allComplete"
+					onClick={this._allComplete}
+				>
+				&#10004;
+				</button>
+				<input
+					className="input-text"
+					type="text"
+					ref="input"
+					value={this.state.text}
+					placeholder="例）ニンジンを買う"
+					onChange={this._edit}
+					onKeyDown={this._enterBind}
+				/>
+				<button
+					className="submit-button"
+					type="button"
+					onClick={this._submit}
+				>
+				Add
+				</button>
+				<button
+					className="all-clear-btn"
+					onClick={this.props.destroyCompleted}
+				>
+				Clear completed
+				</button>
 			</div>
 		)
+	},
+	
+	/*
+	*   全てをdoneに
+	*/
+	_allComplete: function(){
+		this.props.allComplete()
+	},
 
+  /*
+  * 編集機能
+  */
+	_edit: function(e){
+		this.setState({text: e.target.value})
+	},
+
+  /*
+  *   enterでcreateできるように
+  */
+	_enterBind: function(e){
+		if(e.keyCode === ENTER_KEY_CODE) this._submit();
+	},
+
+  /*
+  *   create
+  */
+	_submit: function(){
+		var text = this.state.text.trim();
+		if(text.length < 1 ){
+			alert("文字が空です");
+			return;
+		}
+		this.props.create(text)
+		this.setState({ text: "" });
+		this.refs.input.focus();
+		return;
 	}
-
+ 
 })
-
-module.exports = Coin;
+ 
+module.exports = InputArea;
 ```
 
-Coinは、`App.jsx`から受け取った値を自分自身に適応させればいいだけなので、
+ここまでで、入力系のものを書き終えました。
 
-`className={this.props.coinClass}`となります。
+次はそのデータ表示する場所を作っていってあげます。
 
-ここまでで、Lv1のアプリは作ることができました。
+`LogItem`を囲む`LogBox.jsx`を作っていきましょう。
 
-`index.html`を見て、ちゃんと動くか確認しましょう！
+```
+var React = require("react");
+ 
+var LogItem = require("./LogItem.jsx");
+ 
+var LogBox = React.createClass({
+ 
+	render: function(){
+ 
+		var logItems = [],
+				allMessages = this.props.logData;
+ 
+		for(var key in allMessages){
+			logItems.unshift(
+				<LogItem
+					key={key}
+					logs={allMessages[key]}
+					deleteAction={this.props.deleteAction}
+					updateAction={this.props.updateAction}
+					getInputDefaultValue={this.props.getInputDefaultValue}
+				/>
+			)
+		}
+ 
+		return(
+			<div>
+				<ul className="logbox">
+					{logItems}
+				</ul>
+			</div>
+		)
+	}
+ 
+})
+ 
+module.exports = LogBox;
+```
+
+ここで、AngularやVue.jsなどを触ったことある人ならわかると思うんですが、
+
+Reactには、配列の中身をループして表示するためのものがありません。
+
+Angularでいう`ng-repeat`、Vueでいう`v-for`などです。
+
+なので、配列にjsxのコンポーネントを追加してその配列をrenderするという方式がベターなようです。
+
+他にも直接renderの中に、ループ文を書いてレンダリングする方法もあります。
+
+では、この`LogItem`を実装していきましょう。
+
+この`LogItem`には、削除や編集の機能を持たせないといけないのでTODOで、重要な部分の実装になります。
+
+```
+var React = require("react");
+ 
+var LogItem = React.createClass({
+ 
+	render: function(){
+ 
+		var id = this.props.logs.id,
+				text = this.props.logs.text,
+				date = this.props.logs.date,
+				doneClass = "";
+ 
+		doneClass = this.props.logs.isDone ? "logitem done" : "logitem";
+ 
+		return(
+			<li id={id} className={doneClass} onClick={this._check}>
+				<div className="clearfix">
+					<p className="text">{text}</p>
+					<small className="date">{date}</small>
+				</div>
+				<p onClick={this._delete} className="delete">&times;</p>
+				<p onClick={this._edit} className="edit">edit</p>
+			</li>
+		)
+	},
+ 
+  /*
+  * チェックする
+  */
+	_check: function(e){
+		var id = e.target.id;
+		if(id){
+			this.props.updateAction(id,{
+				isDone: !this.props.logs.isDone
+			});
+		}
+	},
+ 
+  /*
+  *   削除
+  */
+	_delete: function(e){
+		this.props.deleteAction(e.target.parentElement.id);
+		return;
+	},
+
+  /*
+  *   編集
+  */
+	_edit: function(e){
+		var id = e.target.parentElement.id,
+				_text = prompt("変更内容を記述してください",this.props.getInputDefaultValue(id))
+		if(_text !== null){
+			this.props.updateAction(id,{text: _text})
+		}
+		return;
+	}
+ 
+});
+ 
+module.exports = LogItem;
+```
+
+ここまでで実装は終わりです。
+
+Lv1よりも、実用的なもの（よくあるパターンではある）が出来たのではないでしょうか。
+
+それぞれを今回はES5で書きましたが、是非ES6へ書き換えてみてください！
