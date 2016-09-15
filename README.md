@@ -8,7 +8,11 @@ stateで自分自身の状況を判断して、連続でクリックされても
 
 ## ハンズオン
 
-まずは`app.js`を作ります。
+### 1. app.jsの作成
+
+まずは`javascripts/app.js`を編集します。空のファイルが追加されてます。
+
+これはReactがアプリを起動するために一番最初に読み込まれるコードです。
 
 ```js
 var React = require("react");
@@ -24,6 +28,115 @@ ReactDOM.render(
 )
 ```
 
+### 2. App.jsxの作成
+
+次に`components/App.jsx`を作ります。
+
+```js
+var React = require("react");
+
+var App = React.createClass({
+
+	render: function(){
+		return(
+			<div>
+				<h1>Hello React</h1>
+			</div>
+		)
+	}
+})
+
+module.exports = App;
+```
+
+```module.exports = App;```の部分を忘れないように注意して下さい。
+
+### 3. npm start
+
+ターミナルに戻って、コンパイルを実行します。
+
+```
+$ npm start
+```
+
+最初の一回は少し時間がかかります。
+
+ここまで作成したら、ブラウザでindex.htmlを開いてみましょう。
+
+「Hello React」と表示されていればOKです。
+
+編集 -> 自動ビルド -> ブラウザで確認の流れで開発を進めます。
+
+### 4. Block、Coinの作成
+
+``component/Block.jsx``、``component/Coin.jsx``を作成していきます。
+
+
+```js
+var React = require("react");
+
+var Block = React.createClass({
+
+	render: function(){
+		return(
+			<div>
+				<p>This is Block</h1>
+			</div>
+		)
+	}
+})
+
+module.exports = Block;
+```
+
+
+```js
+var React = require("react");
+
+var Coin = React.createClass({
+
+	render: function(){
+		return(
+			<div>
+				<p>This is Coin</h1>
+			</div>
+		)
+	}
+})
+
+module.exports = Coin;
+```
+
+
+### 5. Block、Coinの読み込み
+
+先ほど作成したApp.jsxを編集して、Block、Coinを読み込んでいきます。
+
+```js
+var React = require("react");
+var Block = require("./Block.jsx");
+var Coin = require("./Coin.jsx");
+
+var App = React.createClass({
+
+	render: function(){
+		return(
+			<div>
+				<h1>Hello React</h1>
+				<Coin />
+				<Block />
+			</div>
+		)
+	}
+})
+
+module.exports = App;
+```
+
+ここまで出来たら、ブラウザで確認して行きましょう。
+
+
+## 実装開始
 
 次に`components/App.jsx`を作ります。
 
@@ -137,7 +250,7 @@ var Block = React.createClass({
 
 		}else{
 
-			this.refs.block_image.src = "images/block.png";
+			this.refs.block_image.src = "images/block_close.png";
 			alert("コインはもう出ません")
 
 		}
