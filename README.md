@@ -80,7 +80,7 @@ var Block = React.createClass({
 	render: function(){
 		return(
 			<div>
-				<p>This is Block</h1>
+				<p>This is Block</p>
 			</div>
 		)
 	}
@@ -98,7 +98,7 @@ var Coin = React.createClass({
 	render: function(){
 		return(
 			<div>
-				<p>This is Coin</h1>
+				<p>This is Coin</p>
 			</div>
 		)
 	}
@@ -135,125 +135,25 @@ module.exports = App;
 
 ここまで出来たら、ブラウザで確認して行きましょう。
 
+### 6. Blockの実装
 
-## 実装開始
-
-次に`components/App.jsx`を作ります。
-
-React.createClass()を使い、コンポーネントを作ります。
-
-ここに出てくるものは、
-
-- getInitialState - stateの初期化。
-- render - HTMLを記述します。
-- _？？？ - 自作のメソッドを記述します。（これは習慣なので仕様とかではありません。）
-
+Blockを実装していきます。
 
 ```js
 var React = require("react");
-
-// 後で読み込みます
-var Block = require("./Block.jsx")
-var Coin = require("./Coin.jsx")
-
-var App = React.createClass({
-
-	getInitialState: function(){
-		return{
-			coinClass: "coin img"
-		}
-	},
-
-	render: function(){
-		return(
-			<div>
-				<Coin
-					coinClass={this.state.coinClass}
-				/>
-				<Block
-					classChange={this._classChange}
-				/>
-			</div>
-		)
-	},
-
-	_classChange: function(){
-
-		var self = this;
-		this.setState({ coinClass: "coin img animating" });
-
-		setTimeout(function(){
-			self.setState({ coinClass: "coin img" })
-		},800);
-
-	}
-
-})
-
-module.exports = App;
-```
-
-これで親部分のコンポーネントを作ることはできました。
-
-Reactでは、自分自身の状態を保つのに`state`を使います。
-
-App.jsxでは、`coinClass`という`state`を持っています。これは、coinに与えるクラスになります。
-
-Blockが押されたときにclassを変えたいので、`_classChange`をブロックに渡してしまいましょう。
-
-肝心な`coinClass`のstateをCoinコンポーネントに渡し忘れないようにしましょう。
-
-`this.setState`は、stateをアップデートするためのものです。setStateを行うと、仮想DOMにより実際のDOMとの差分だけ再レンダリングされます。
-
-  
-
-次は、この２つの子コンポーネントを作っていきましょう。
-
-Blockコンポーネントを作っていきます。
-
-```js
-var React = require("react");
-
-var count = 0,
-		MAX_COUNT = 10; // 10回叩くと、コインが出なくなるようにします。
 
 var Block = React.createClass({
 
-	getInitialState: function(){
-		return{
-			isAnimating: false
-		}
-	},
-
 	render: function(){
 		return(
-			<div className="img block" onClick={this._onClick}>
-				<img ref="block_image" src="images/block.png"/>
-			</div>
-		)
+            <div className="img block" onClick={this._onClick}>
+                <img ref="block_image" src="images/block.png"/>
+            </div>
+        )
 	},
 
-	_onClick: function(){
-
-		if(this.state.isAnimating) return; // アニメーション中のclickを無視します。
-
-		if(count < MAX_COUNT){
-
-			var self = this;
-
-			this.props.classChange();
-			this.setState({ isAnimating: true })
-			setTimeout(function(){
-				self.setState({ isAnimating: false })
-			},800);
-			count+=1;
-
-		}else{
-
-			this.refs.block_image.src = "images/block_close.png";
-			alert("コインはもう出ません")
-
-		}
+	_onClick : function(){
+		alert("block clicked!")
 	}
 
 })
@@ -261,24 +161,8 @@ var Block = React.createClass({
 module.exports = Block;
 ```
 
-これでBlockができあがりました。
+### 7. Coinの実装
 
-ここで肝心なのは`props`です。
-
-`state`に対して、親から子へと送られるものは`props`というところから参照します。
-
-先ほど`App.jsx`で、`_classChange`を`classChange`としてBlockに渡していました。
-
-この`classChange`を参照するには、`this.props.classChange`となります。
-
-Blockでは、`_onClick`というメソッドがあります。
-
-ブロックをクリックすると`_onClick`が実行されます。その中で`this.props.classChange`を実行することで
-
-`App.jsx`の`_classChange`を実行し、`coinClass`を書き換えることができます。
-
-
-最後に`Coin.jsx`を見てみましょう。
 
 ```js
 var React = require("react");
@@ -286,24 +170,114 @@ var React = require("react");
 var Coin = React.createClass({
 
 	render: function(){
-
 		return(
 			<div className={this.props.coinClass}>
-				<img src="images/coin.png" />
-			</div>
+                <img src="images/coin.png" />
+            </div>
 		)
-
 	}
-
 })
 
 module.exports = Coin;
 ```
 
-Coinは、`App.jsx`から受け取った値を自分自身に適応させればいいだけなので、
+Coinのクラスは書き換えが可能なように``props``経由で指定します。
 
-`className={this.props.coinClass}`となります。
+App.jsxを編集してCoinのクラスを変更します。
 
-ここまでで、Lv1のアプリは作ることができました。
+```js
+var App = React.createClass({
 
-`index.html`を見て、ちゃんと動くか確認しましょう！
+	render: function(){
+		return(
+			...
+			<Coin coinClass="img coin" />
+			...
+		)
+	}
+})
+```
+
+
+### 8. クリックイベントでCoinのクラスを書き換える
+
+App.jsxを編集します。
+
+```js
+var App = React.createClass({
+
+	getInitialState : function(){
+		return {
+			coinClass : "img coin"
+		}
+	},
+
+	render: function(){
+		return(
+			...
+			<Coin coinClass={this.state.coinClass} />
+			<Block classChange={this._classChange} />
+			...
+		)
+	},
+
+	_classChange: function(){
+
+		this.setState({ coinClass: "coin img animating" });
+
+	}
+
+})
+```
+
+Block.jsxを編集して、クリックイベントを処理する箇所を書き換えます
+
+```
+var React = require("react");
+
+var Block = React.createClass({
+
+	render: function(){
+		return(
+            <div className="img block" onClick={this._onClick}>
+                <img ref="block_image" src="images/block.png"/>
+            </div>
+        )
+	},
+
+	_onClick : function(){
+		this.props.classChange();
+	}
+
+})
+
+module.exports = Block;
+```
+
+AppとBlockのイベントのつながりを``props``経由で行います。
+
+ここでブラウザで確認しましょう。ブロックをクリックするとコインが飛び出ることを確認してください。
+
+
+### 9. 二回目以降が出来るようにする
+
+コインが何度も飛び出るように、App.jsxを書き換えます
+
+
+```js
+var App = React.createClass({
+
+	_classChange: function(){
+
+		var self = this;
+		this.setState({ coinClass: "coin img animating" });
+
+		setTimeout(function(){
+			self.setState({ coinClass: "coin img" });
+		}, 800);
+
+	}
+
+})
+```
+
