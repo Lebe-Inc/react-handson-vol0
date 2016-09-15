@@ -115,7 +115,7 @@ var Block = React.createClass({
 	render: function(){
 		return(
 			<div className="img block" onClick={this._onClick}>
-				<img ref="block_image" src="http://www.machi-mori.com/mydesign/pict/12803.gif"/>
+				<img ref="block_image" src="images/block.png"/>
 			</div>
 		)
 	},
@@ -137,7 +137,7 @@ var Block = React.createClass({
 
 		}else{
 
-			this.refs.block_image.src = "http://www.machi-mori.com/mydesign/pict/10211.gif";
+			this.refs.block_image.src = "images/block.png";
 			alert("コインはもう出ません")
 
 		}
