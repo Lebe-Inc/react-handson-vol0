@@ -335,7 +335,7 @@ var Block = React.createClass({
 	getInitialState: function(){
 		return{
       isAnimating: false
-    }
+    	}
 	},
 
 	render: function(){
