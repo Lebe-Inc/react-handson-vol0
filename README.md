@@ -332,7 +332,7 @@ Angularでいう`ng-repeat`、Vueでいう`v-for`などです。
 
 この`LogItem`には、削除や編集の機能を持たせないといけないのでTODOで、重要な部分の実装になります。
 
-```
+```js
 var React = require("react");
  
 var LogItem = React.createClass({
