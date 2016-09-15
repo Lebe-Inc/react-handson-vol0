@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://gitbucket.dev2.lebe.jp/git/konojunya/react_teaching_material.git"
+    "url": "git+https://github.com/Lebe-Inc/react-handson-vol0.git"
   },
   "keywords": [],
   "author": "",
