@@ -1,23 +1,18 @@
 {
-  "name": "react-handson-vol0",
+  "name": "react_teaching_material",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "watchify -v -t babelify javascripts/app.js -o javascripts/bundle.js"
+    "start": "watchify -v -t babelify js/app.js -o js/bundle.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Lebe-Inc/react-handson-vol0.git"
+    "url": "http://gitbucket.dev2.lebe.jp/git/konojunya/react_teaching_material.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Lebe-Inc/react-handson-vol0/issues"
-  },
-  "homepage": "https://github.com/Lebe-Inc/react-handson-vol0#readme",
   "dependencies": {
     "react": "^15.3.1",
     "react-dom": "^15.3.1"
